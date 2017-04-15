@@ -20,16 +20,26 @@ export default class ComponentRegistry {
     }
 
     public register(componentClass: typeof React.Component): void {
+        /**
+         *  Fix for IE11
+         */
+        let result = /^function\s+([\w\$]+)\s*\(/.exec(componentClass.toString());
+        let componentClassName: string = result[1];
         /* tslint:disable:no-string-literal */
-        let componentClassName: string = (componentClass as any)["name"];
+        // let componentClassName: string = (componentClass as any)["name"];
         /* tsslint:enable:no-string-literal */
         let resourceType: string = this.mapToResourceType(componentClassName);
         this.mappings.push(new Mapping(resourceType, componentClass, null));
     }
 
     public registerVanilla(config: ComponentConfig): void {
+        /**
+         *  Fix for IE11
+         */
+        let result = /^function\s+([\w\$]+)\s*\(/.exec(config.component.toString());
+        let componentClassName: string = result[1];
         /* tslint:disable:no-string-literal */
-        let componentClassName: string = (config.component as any)["name"];
+        // let componentClassName: string = (config.component as any)["name"];
         /* tsslint:enable:no-string-literal */
         let resourceType: string = this.mapToResourceType(componentClassName);
         let wrapperClass: React.ComponentClass<any> = WrapperFactory.createWrapper(config, resourceType);

@@ -59,6 +59,23 @@ export class Wrapper extends ResourceComponent<any, any, any> {
         } else {
             newProps = props;
         }
+        let objx = [props, newProps];
+        if (Object.keys(newProps).length > 0) {
+            // merge old props with new props using Object.assign polyfill
+            let to = Object({});
+            for (let index = 0; index < objx.length; index++) {
+                let nextSource = objx[index];
+                if (nextSource != null) { // Skip over if undefined or null
+                    for (let nextKey in nextSource) {
+                        // Avoid bugs when hasOwnProperty is shadowed
+                        if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                            to[nextKey] = nextSource[nextKey];
+                        }
+                    }
+                }
+            }
+            props = to;
+        }
         return React.createElement(this.config.component, newProps, children);
     }
 
